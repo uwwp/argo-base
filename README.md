@@ -14,7 +14,7 @@
 | AUTO_ACCESS  | 否       | false                                | 是否开启自动访问保活 |
 | PORT         | 否       | 3000                                 | HTTP服务监听端口     |
 | ARGO_PORT    | 否       | 8001                                 | Argo隧道端口         |
-| UUID         | 否       | 6bf62ccf-f074-438b-b8fc-8ae7ff4167d5 | 用户UUID             |
+| UUID         | 否       | a1388aeb-2766-4abf-9caf-82b19eb2906d | 用户UUID             |
 | NEZHA_SERVER | 否       | -                                    | 哪吒面板域名         |
 | NEZHA_PORT   | 否       | -                                    | 哪吒端口             |
 | NEZHA_KEY    | 否       | -                                    | 哪吒密钥             |
@@ -37,7 +37,7 @@ ARGO_PORT=8001
 CFIP="saas.sin.fan"
 CFPORT=443
 NAME="Base"
-UUID="6bf62ccf-f074-438b-b8fc-8ae7ff4167d5"
+UUID="a1388aeb-2766-4abf-9caf-82b19eb2906d"
 ARGO_DOMAIN="argo.your-domain.com"
 ARGO_AUTH="your-argo-auth"
 NEZHA_SERVER="nz.your-domain.com"
