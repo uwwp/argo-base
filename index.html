@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mock Dashboard</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --panel-2: #f9fafc;
+      --text: #182033;
+      --muted: #7a8499;
+      --border: #e6eaf2;
+      --primary: #4f7cff;
+      --success: #28b487;
+      --warning: #ffb020;
+      --danger: #f25767;
+      --shadow: 0 18px 45px rgba(31, 45, 61, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue",
+        "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(79, 124, 255, 0.16), transparent 32rem),
+        var(--bg);
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 20px;
+      color: #fff;
+      background: linear-gradient(180deg, #17203a, #101729);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 34px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #4f7cff, #7f5cff);
+      box-shadow: 0 12px 24px rgba(79, 124, 255, 0.28);
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav button {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 13px 14px;
+      border: 0;
+      border-radius: 14px;
+      color: rgba(255, 255, 255, 0.78);
+      background: transparent;
+      cursor: pointer;
+      font-size: 15px;
+      text-align: left;
+      transition: 0.2s ease;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-card {
+      margin-top: 34px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-card p {
+      margin-top: 8px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .main {
+      padding: 28px;
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 26px;
+    }
+
+    .title-block h1 {
+      font-size: clamp(26px, 3vw, 36px);
+      letter-spacing: -0.8px;
+    }
+
+    .title-block p {
+      margin-top: 6px;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search {
+      position: relative;
+    }
+
+    .search input {
+      width: min(340px, 42vw);
+      padding: 13px 16px 13px 42px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+      box-shadow: 0 8px 25px rgba(31, 45, 61, 0.04);
+    }
+
+    .search span {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      color: #fff;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4f7cff, #28b487);
+      box-shadow: 0 12px 24px rgba(79, 124, 255, 0.2);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .card,
+    .panel {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(230, 234, 242, 0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .card {
+      padding: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      font-size: 20px;
+      background: var(--panel-2);
+    }
+
+    .metric {
+      margin-top: 16px;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(40, 180, 135, 0.12);
+      color: var(--success);
+    }
+
+    .trend.down {
+      background: rgba(242, 87, 103, 0.12);
+      color: var(--danger);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.7fr 0.9fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .panel {
+      padding: 22px;
+      min-width: 0;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .panel-head h2 {
+      font-size: 18px;
+    }
+
+    .select {
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--muted);
+      outline: none;
+    }
+
+    canvas {
+      width: 100%;
+      height: 280px;
+      display: block;
+    }
+
+    .progress-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .progress-row {
+      display: grid;
+      gap: 8px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: #edf1f7;
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: var(--value);
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), #7f5cff);
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      padding: 15px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 700;
+      background: rgba(249, 250, 252, 0.7);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .status {
+      display: inline-flex;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .status.done {
+      color: var(--success);
+      background: rgba(40, 180, 135, 0.12);
+    }
+
+    .status.pending {
+      color: var(--warning);
+      background: rgba(255, 176, 32, 0.14);
+    }
+
+    .status.fail {
+      color: var(--danger);
+      background: rgba(242, 87, 103, 0.12);
+    }
+
+    .activity {
+      display: grid;
+      gap: 16px;
+    }
+
+    .activity-item {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .dot {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--panel-2);
+    }
+
+    .activity-item strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .activity-item span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .mobile-menu {
+      display: none;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    @media (max-width: 1080px) {
+      .app {
+        grid-template-columns: 88px 1fr;
+      }
+
+      .sidebar {
+        padding: 24px 14px;
+      }
+
+      .brand span,
+      .nav button span,
+      .sidebar-card {
+        display: none;
+      }
+
+      .brand {
+        justify-content: center;
+      }
+
+      .nav button {
+        justify-content: center;
+      }
+
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .grid,
+      .bottom {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        display: block;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        padding: 18px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .actions {
+        width: 100%;
+      }
+
+      .mobile-menu {
+        display: inline-block;
+      }
+
+      .search {
+        flex: 1;
+      }
+
+      .search input {
+        width: 100%;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">D</div>
+        <span>DataDash</span>
+      </div>
+
+      <nav class="nav" aria-label="Main navigation">
+        <button class="active" type="button">🏠 <span>Overview</span></button>
+        <button type="button">📈 <span>Analytics</span></button>
+        <button type="button">🛒 <span>Orders</span></button>
+        <button type="button">👥 <span>Customers</span></button>
+        <button type="button">⚙️ <span>Settings</span></button>
+      </nav>
+
+      <div class="sidebar-card">
+        <strong>Monthly Goal</strong>
+        <p>Revenue target completion is 76%, projected to reach 94% by month-end.</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="title-block">
+          <h1>Business Dashboard</h1>
+          <p id="todayText">Welcome back. Loading today’s overview...</p>
+        </div>
+
+        <div class="actions">
+          <button class="mobile-menu" type="button">☰</button>
+          <label class="search">
+            <span>⌕</span>
+            <input id="searchInput" type="search" placeholder="Search orders, customers, or channels..." />
+          </label>
+          <div class="avatar" title="Admin">Y</div>
+        </div>
+      </header>
+
+      <section class="cards" id="metricCards" aria-label="Core metrics"></section>
+
+      <section class="grid">
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Revenue Trend</h2>
+            <select class="select" id="rangeSelect">
+              <option value="7">Last 7 Days</option>
+              <option value="14">Last 14 Days</option>
+              <option value="30">Last 30 Days</option>
+            </select>
+          </div>
+          <canvas id="revenueChart" width="900" height="320" aria-label="Revenue trend chart"></canvas>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Channel Conversion</h2>
+          </div>
+          <div class="progress-list" id="channelList"></div>
+        </article>
+      </section>
+
+      <section class="bottom">
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Recent Orders</h2>
+            <span id="orderCount" style="color: var(--muted); font-size: 14px;"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Amount</th>
+                  <th>Channel</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="orderTable"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Activity Alerts</h2>
+          </div>
+          <div class="activity" id="activityList"></div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const mock = {
+      metrics: [
+        { label: "Total Revenue", value: "¥128.6K", trend: "+12.8%", icon: "💰", up: true },
+        { label: "New Users", value: "3,482", trend: "+8.4%", icon: "👥", up: true },
+        { label: "Orders", value: "1,296", trend: "+5.1%", icon: "🧾", up: true },
+        { label: "Refund Rate", value: "1.8%", trend: "-0.6%", icon: "↩️", up: false }
+      ],
+      revenue: {
+        7: [12, 18, 16, 24, 28, 26, 36],
+        14: [9, 13, 18, 16, 21, 24, 22, 28, 30, 27, 32, 35, 33, 40],
+        30: [8, 12, 10, 15, 13, 18, 20, 19, 22, 24, 23, 25, 29, 28, 31, 34, 33, 36, 38, 35, 39, 41, 44, 42, 45, 47, 49, 46, 52, 55]
+      },
+      channels: [
+        { name: "Organic Search", value: 82 },
+        { name: "Social Media", value: 68 },
+        { name: "Paid Ads", value: 56 },
+        { name: "Email Marketing", value: 43 }
+      ],
+      orders: [
+        { id: "#DD-1048", customer: "Lina Lin", amount: "¥2,480", channel: "Organic Search", status: "Completed" },
+        { id: "#DD-1047", customer: "Ethan Chen", amount: "¥980", channel: "Social Media", status: "Processing" },
+        { id: "#DD-1046", customer: "Noah Wang", amount: "¥5,680", channel: "Paid Ads", status: "Completed" },
+        { id: "#DD-1045", customer: "Stella Zhao", amount: "¥390", channel: "Email Marketing", status: "Failed" },
+        { id: "#DD-1044", customer: "Nancy Zhou", amount: "¥1,260", channel: "Organic Search", status: "Completed" }
+      ],
+      activities: [
+        { icon: "🚀", title: "Campaign launched", text: "The mid-year warm-up campaign brought 326 new visitors." },
+        { icon: "📦", title: "Inventory alert", text: "Best-selling item A-102 is below the safety stock level." },
+        { icon: "✅", title: "System task completed", text: "Yesterday’s data sync completed at 08:30." },
+        { icon: "💬", title: "Support messages", text: "12 high-priority inquiries are waiting for review." }
+      ]
+    };
+
+    const metricCards = document.querySelector("#metricCards");
+    const channelList = document.querySelector("#channelList");
+    const orderTable = document.querySelector("#orderTable");
+    const activityList = document.querySelector("#activityList");
+    const orderCount = document.querySelector("#orderCount");
+    const searchInput = document.querySelector("#searchInput");
+    const rangeSelect = document.querySelector("#rangeSelect");
+    const canvas = document.querySelector("#revenueChart");
+    const ctx = canvas.getContext("2d");
+
+    function formatToday() {
+      const formatter = new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        weekday: "long"
+      });
+      document.querySelector("#todayText").textContent =
+        `${formatter.format(new Date())} · Today’s data has been updated`;
+    }
+
+    function renderMetrics() {
+      metricCards.innerHTML = mock.metrics.map(item => `
+        <article class="card">
+          <div class="card-header">
+            <span>${item.label}</span>
+            <span class="icon">${item.icon}</span>
+          </div>
+          <div class="metric">${item.value}</div>
+          <span class="trend ${item.up ? "" : "down"}">${item.up ? "↑" : "↓"} ${item.trend}</span>
+        </article>
+      `).join("");
+    }
+
+    function renderChannels() {
+      channelList.innerHTML = mock.channels.map(item => `
+        <div class="progress-row">
+          <div class="progress-meta">
+            <strong>${item.name}</strong>
+            <span>${item.value}%</span>
+          </div>
+          <div class="bar" style="--value: ${item.value}%"><span></span></div>
+        </div>
+      `).join("");
+    }
+
+    function statusClass(status) {
+      if (status === "Completed") return "done";
+      if (status === "Processing") return "pending";
+      return "fail";
+    }
+
+    function renderOrders(keyword = "") {
+      const normalized = keyword.trim().toLowerCase();
+      const orders = mock.orders.filter(order =>
+        Object.values(order).some(value => String(value).toLowerCase().includes(normalized))
+      );
+
+      orderCount.textContent = `${orders.length} records`;
+      orderTable.innerHTML = orders.map(order => `
+        <tr>
+          <td><strong>${order.id}</strong></td>
+          <td>${order.customer}</td>
+          <td>${order.amount}</td>
+          <td>${order.channel}</td>
+          <td><span class="status ${statusClass(order.status)}">${order.status}</span></td>
+        </tr>
+      `).join("");
+
+      if (!orders.length) {
+        orderTable.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--muted);">No matching results</td></tr>`;
+      }
+    }
+
+    function renderActivities() {
+      activityList.innerHTML = mock.activities.map(item => `
+        <div class="activity-item">
+          <div class="dot">${item.icon}</div>
+          <div>
+            <strong>${item.title}</strong>
+            <span>${item.text}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function drawChart(days = "7") {
+      const data = mock.revenue[days];
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+
+      canvas.width = rect.width * dpr;
+      canvas.height = 320 * dpr;
+      ctx.scale(dpr, dpr);
+
+      const width = rect.width;
+      const height = 320;
+      const padding = 36;
+      const max = Math.max(...data) + 8;
+      const min = 0;
+      const plotW = width - padding * 2;
+      const plotH = height - padding * 2;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.font = "12px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+
+      for (let i = 0; i <= 4; i++) {
+        const y = padding + (plotH / 4) * i;
+        ctx.beginPath();
+        ctx.strokeStyle = "#e6eaf2";
+        ctx.lineWidth = 1;
+        ctx.moveTo(padding, y);
+        ctx.lineTo(width - padding, y);
+        ctx.stroke();
+
+        const label = Math.round(max - ((max - min) / 4) * i);
+        ctx.fillStyle = "#7a8499";
+        ctx.fillText(`${label}k`, 6, y + 4);
+      }
+
+      const points = data.map((value, index) => {
+        const x = padding + (plotW / (data.length - 1)) * index;
+        const y = padding + plotH - ((value - min) / (max - min)) * plotH;
+        return { x, y, value };
+      });
+
+      const gradient = ctx.createLinearGradient(0, padding, 0, height - padding);
+      gradient.addColorStop(0, "rgba(79, 124, 255, 0.24)");
+      gradient.addColorStop(1, "rgba(79, 124, 255, 0)");
+
+      ctx.beginPath();
+      points.forEach((point, index) => {
+        if (index === 0) ctx.moveTo(point.x, point.y);
+        else ctx.lineTo(point.x, point.y);
+      });
+      ctx.lineTo(points[points.length - 1].x, height - padding);
+      ctx.lineTo(points[0].x, height - padding);
+      ctx.closePath();
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      ctx.beginPath();
+      points.forEach((point, index) => {
+        if (index === 0) ctx.moveTo(point.x, point.y);
+        else {
+          const previous = points[index - 1];
+          const cx = (previous.x + point.x) / 2;
+          ctx.bezierCurveTo(cx, previous.y, cx, point.y, point.x, point.y);
+        }
+      });
+      ctx.strokeStyle = "#4f7cff";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      points.forEach((point, index) => {
+        if (data.length > 14 && index % 3 !== 0 && index !== data.length - 1) return;
+
+        ctx.beginPath();
+        ctx.fillStyle = "#ffffff";
+        ctx.strokeStyle = "#4f7cff";
+        ctx.lineWidth = 3;
+        ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#7a8499";
+        ctx.fillText(`${index + 1}`, point.x - 4, height - 10);
+      });
+    }
+
+    function init() {
+      formatToday();
+      renderMetrics();
+      renderChannels();
+      renderOrders();
+      renderActivities();
+      drawChart(rangeSelect.value);
+
+      searchInput.addEventListener("input", event => renderOrders(event.target.value));
+      rangeSelect.addEventListener("change", event => drawChart(event.target.value));
+      window.addEventListener("resize", () => drawChart(rangeSelect.value));
+    }
+
+    init();
+  </script>
+</body>
+</html>
